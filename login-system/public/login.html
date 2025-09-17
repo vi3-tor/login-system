@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-box login">
+        <form id="loginForm">
+          <h1>Login</h1>
+          <div class="input-box">
+            <input type="email" id="loginEmail" placeholder="Email" required />
+            <i class="bx bx-envelope"></i>
+          </div>
+          <div class="input-box">
+            <input type="password" id="loginPassword" placeholder="Password" required />
+            <i class="bx bx-lock-alt"></i>
+          </div>
+          <div class="forgot-link">
+            <a href="#">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn">Login</button>
+          <p>or login with social platforms</p>
+          <div class="social-icons">
+            <a href="#"><i class='bx bxl-google'></i></a>
+            <a href="#"><i class='bx bxl-facebook'></i></a>
+            <a href="#"><i class='bx bxl-instagram'></i></a>
+            <a href="#"><i class='bx bxl-linkedin'></i></a>
+          </div>
+        </form>
+      </div>
+
+      <div class="form-box register">
+        <form id="registerForm">
+          <h1>Signup</h1>
+          <div class="input-box">
+            <input type="text" placeholder="Username" id="username" required />
+            <i class="bx bx-user"></i>
+          </div>
+          <div class="input-box">
+            <input type="email" placeholder="Email" id="email" required />
+            <i class="bx bxs-envelope"></i>
+          </div>
+          <div class="input-box">
+            <input type="password" placeholder="Password" id="password" required />
+            <i class="bx bx-lock-alt"></i>
+          </div>
+          
+          <button type="submit" class="btn">Sign Up</button>
+          <p>or register with social platforms</p>
+          <div class="social-icons">
+            <a href="#"><i class='bx bxl-google'></i></a>
+            <a href="#"><i class='bx bxl-facebook'></i></a>
+            <a href="#"><i class='bx bxl-instagram'></i></a>
+            <a href="#"><i class='bx bxl-linkedin'></i></a>
+          </div>
+        </form>
+      </div>
+
+      <div class="toggle-box">
+        <div class="toggle-panel toggle-left">
+          <img src="/img/Logo copy.png" alt="Logo" class="logo"> <!-- Add this -->
+          <h1>Hello, Welcome!</h1>
+          <p>Don't have an account?</p>
+         
+          <button class="btn register-btn">Signup</button>
+        </div>
+        <div class="toggle-panel toggle-right">
+          <img src="/img/Logo copy.png" alt="Logo" class="logo"> <!-- Add this -->
+          <h1>Welcome Back!</h1>
+          <P>Already have an account?</P>
+
+          <button class="btn login-btn">Login</button>
+        </div>
+      </div>
+
+    </div>
+    
+    <!-- Email Message Popup -->
+<div id="emailPopup" class="popup">
+  <div class="popup-content">
+      <p id="emailMessageText">📩 Please check your email to verify your account.</p>
+      <button class="confirm-btn" onclick="closeEmailPopup()">OK</button>
+  </div>
+</div>
+
+  
+
+  
+
+  <div id="overlay"></div>
+
+
+    <script>
+      const container = document.querySelector('.container');
+const registerBtn = document.querySelector('.register-btn');
+const loginBtn = document.querySelector('.login-btn');
+
+registerBtn.addEventListener('click', () => {
+    container.classList.add('active');
+});
+
+loginBtn.addEventListener('click', () => {
+    container.classList.remove('active');
+});
+    </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  // SIGNUP FORM
+  $('#registerForm').submit(function (e) {
+    e.preventDefault();
+
+    $.post('/auth/register', {
+      username: $('#username').val(),
+      email: $('#email').val(),
+      password: $('#password').val()
+    })
+    .done(res => {
+      // ✅ Show custom popup
+      $('#emailMessageText').text(res.message);
+      $('#emailPopup').addClass('show').css('display', 'block');
+    })
+    .fail(err => {
+      // ✅ Also show error inside the popup
+      const errorMsg = err.responseJSON?.error || 'Registration failed';
+      $('#emailMessageText').text(errorMsg);
+      $('#emailPopup').addClass('show').css('display', 'block');
+    });
+  });
+
+  // LOGIN FORM
+  $('#loginForm').submit(function (e) {
+    e.preventDefault();
+
+    $.post('/auth/login', {
+      email: $('#loginEmail').val(),
+      password: $('#loginPassword').val()
+    })
+    .done(res => {
+      window.location.href = res.redirect; // Redirect to home page
+    })
+    .fail(err => {
+      alert(err.responseJSON?.error || 'Login failed');
+    });
+  });
+
+  // Close the popup
+  function closeEmailPopup() {
+    $('#emailPopup').removeClass('show').fadeOut();
+  }
+</script>
+
+
+
+  </body>
+</html>

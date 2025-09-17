@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile | Share Hubs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #000;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-card {
+  background-color: #000; /* 🆕 pure black */
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+  width: 850px;
+  display: flex;
+  gap: 40px;
+}
+
+    .profile-left {
+      flex: 0 0 180px;
+      text-align: center;
+    }
+
+    .profile-left .icon-wrapper {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background-color: #000;
+      border: 3px solid #2c2d3f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    .profile-left i {
+      font-size: 64px;
+      color: #fff;
+    }
+
+    .profile-left a {
+      margin-top: 12px;
+      display: inline-block;
+      font-size: 14px;
+      color: #ccc;
+      text-decoration: underline;
+    }
+
+    .profile-right {
+      flex: 1;
+    }
+
+    .profile-header {
+      margin-bottom: 20px;
+    }
+
+    .profile-header h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #800000;
+      margin: 0 0 8px;
+    }
+
+    .profile-header p {
+      font-size: 15px;
+      color: #bbb;
+      margin: 0;
+    }
+
+    .profile-info {
+      margin-bottom: 24px;
+    }
+
+    .profile-info p {
+      margin: 8px 0;
+      font-size: 15px;
+      color: #ccc;
+    }
+
+    .profile-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .profile-actions button {
+  background-color: #2c2d3f; /* 🆕 deep maroon default */
+  border: 2px solid #2c2d3f;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+
+
+
+@media screen and (max-width: 768px) {
+  .profile-card {
+    flex-direction: column;
+    padding: 30px 20px;
+    width: 90%;
+    gap: 20px;
+  }
+
+  .profile-left {
+    text-align: center;
+  }
+
+  .profile-left .icon-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-left i {
+    font-size: 50px;
+  }
+
+  .profile-header h2 {
+    font-size: 20px;
+  }
+
+  .profile-info p,
+  .profile-header p {
+    font-size: 14px;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .profile-actions button {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="profile-card">
+    <div class="profile-left">
+      <div class="icon-wrapper">
+        <i class="fas fa-user-circle"></i>
+      </div>
+     
+    </div>
+
+    <div class="profile-right">
+      <div class="profile-header">
+        <h2 id="profile-username">Loading...</h2>
+        <p id="profile-email">loading</p>
+      </div>
+
+      <div class="profile-info">
+        <p><strong>Username:</strong> <span id="profile-username">Loading...</span></p>
+        <p><strong>Joined:</strong><span id="profile-joined">Loading...</span></p>
+      </div>
+
+      <div class="profile-actions">
+        
+        <button onclick="window.location.href='/store'">Visit Store</button>
+        <button onclick="window.location.href='/orders'">Home</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      fetch('/api/profile-data')
+        .then(res => {
+          if (!res.ok) throw new Error('Unauthorized');
+          return res.json();
+        })
+        .then(user => {
+          document.getElementById('profile-name').textContent = user.username;
+          document.getElementById('profile-email').textContent = user.email;
+          document.getElementById('profile-joined').textContent = new Date(user.created_at).toLocaleDateString();
+        })
+        .catch(err => {
+          console.error(err);
+          window.location.href = '/'; // redirect to login if not logged in
+        });
+    });
+  </script>
+  
+  <script>
+    function logout() {
+      fetch('/logout').then(() => window.location.href = '/');
+    }
+  </script>
+
+</body>
+</html>
